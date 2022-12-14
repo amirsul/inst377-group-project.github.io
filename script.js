@@ -6,7 +6,7 @@
 */
 // Make the HTTP request to the API
 
-fetch("https://data.princegeorgescountymd.gov/resource/7k64-tdwr.json")
+fetch('https://data.princegeorgescountymd.gov/resource/7k64-tdwr.json')
   .then((response) => response.json())
   .then((data) => console.log(data));
 
@@ -31,15 +31,15 @@ function getRandomIntInclusive(min, max) {
 
 function injectHTML(list) {
   // eslint-disable-next-line no-console
-  console.log("fired injectHTML");
-  const target = document.querySelector("#restaurant_list");
-  target.innerHTML = "";
+  console.log('fired injectHTML');
+  const target = document.querySelector('#restaurant_list');
+  target.innerHTML = '';
 
-  const listEl = document.createElement("ol");
+  const listEl = document.createElement('ol');
   target.appendChild(listEl);
   list.forEach((item) => {
-    const el = document.createElement("li");
-    el.innerText = `Library Name:${item.branch_name} Address:${JSON.parse(item.location_1.human_address).address.split(",")[0]}`;
+    const el = document.createElement('li');
+    el.innerText = `Library Name:${item.branch_name} Address:${JSON.parse(item.location_1.human_address).address.split(',')[0]}`;
     listEl.appendChild(el);
   });
   /*
@@ -59,7 +59,7 @@ function injectHTML(list) {
 }
 
 function processRestaurants(list) {
-  console.log("fired restaurants list");
+  console.log('fired restaurants list');
   const range = [...Array(15).keys()];
   const newArray = range.map((item) => {
     const index = getRandomIntInclusive(0, list.length);
@@ -86,31 +86,27 @@ function processRestaurants(list) {
       */
 }
 
-function filterList(list, filterInputValue) {
-  return list.filter((item) => {
-    if (!item.name) {
-      return;
-    }
-    const lowerCaseName = item.name.toLowerCase();
+function filterList(array, filterInputValue) {
+  return array.filter((item) => {
+    if (!item.branch_name) { return; }
+    const lowerCaseName = item.branch_name.toLowerCase();
     const lowerCaseQuery = filterInputValue.toLowerCase();
     return lowerCaseName.includes(lowerCaseQuery);
   });
 }
 
 function initMap() {
-  console.log("initMap");
-  const map = L.map("map").setView([38.7849, -76.9378], 13);
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  console.log('initMap');
+  const map = L.map('map').setView([38.9869, -76.9426], 13);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    attribution:
-      '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map);
   return map;
 }
 
 function markerPlace(array, map) {
-  const marker = L.marker([coordinates]);
-  marker.addTo(map);
+  console.log('markerPlace', array);
   map.eachLayer((layer) => {
     if (layer instanceof L.Marker) {
       layer.remove();
@@ -118,11 +114,11 @@ function markerPlace(array, map) {
   });
 
   array.forEach((item, index) => {
-    const { coordinates } = item.location_1;
-    L.marker([coordinates[latitude], coordinates[longitude]]).addTo(map);
-    if (index === 0) {
-      map.setView([coordinates[latitude], coordinates[longitude]], 10);
-    }
+    const {latitude} = item.location_1;
+    const {longitude} = item.location_1;
+    console.log(latitude, longitude);
+    L.marker([Number(latitude), Number(longitude)]).addTo(map);
+    if (index === 0) { map.setView([Number(latitude), Number(longitude)], 10); }
   });
 }
 
@@ -135,10 +131,10 @@ async function mainEvent() {
       */
   const pageMap = initMap();
   // the async keyword means we can make API requests
-  const form = document.querySelector(".main_form"); // get your main form so you can do JS with it
-  const submit = document.querySelector("#get-resto"); // get a reference to your submit button
-  const loadAnimation = document.querySelector(".lds-ellipsis");
-  submit.style.display = "none"; // let your submit button disappear
+  const form = document.querySelector('.main_form'); // get your main form so you can do JS with it
+  const submit = document.querySelector('#get-resto'); // get a reference to your submit button
+  const loadAnimation = document.querySelector('.lds-ellipsis');
+  submit.style.display = 'none'; // let your submit button disappear
 
   /*
         Let's get some data from the API - it will take a second or two to load
@@ -146,7 +142,7 @@ async function mainEvent() {
         It's at about line 27 - go have a look and see what we're retrieving and sending back.
        */
   const results = await fetch(
-    "https://data.princegeorgescountymd.gov/resource/7k64-tdwr.json"
+    'https://data.princegeorgescountymd.gov/resource/7k64-tdwr.json'
   );
   const arrayFromJson = await results.json(); // here is where we get the data from our request as JSON
   /*
@@ -167,15 +163,15 @@ async function mainEvent() {
   // This IF statement ensures we can't do anything if we don't have information yet
   if (arrayFromJson?.length > 0) {
     // the question mark in this means "if this is set at all"
-    submit.style.display = "block"; // let's turn the submit button back on by setting it to display as a block when we have data available
+    submit.style.display = 'block'; // let's turn the submit button back on by setting it to display as a block when we have data available
 
     // hide load button
-    loadAnimation.classList.remove("lds-ellipsis");
-    loadAnimation.classList.add("lds-ellipsis_hidden");
+    loadAnimation.classList.remove('lds-ellipsis');
+    loadAnimation.classList.add('lds-ellipsis_hidden');
 
     let currentList = [];
 
-    form.addEventListener("input", (event) => {
+    form.addEventListener('input', (event) => {
       console.log(event.target.value);
       const filteredList = filterList(currentList, event.target.value);
       injectHTML(filteredList);
@@ -184,7 +180,7 @@ async function mainEvent() {
 
     // And here's an eventListener! It's listening for a "submit" button specifically being clicked
     // this is a synchronous event event, because we already did our async request above, and waited for it to resolve
-    form.addEventListener("submit", (submitEvent) => {
+    form.addEventListener('submit', (submitEvent) => {
       // This is needed to stop our page from changing to a new URL even though it heard a GET request
       submitEvent.preventDefault();
 
@@ -206,4 +202,4 @@ async function mainEvent() {
       It's calling the 'mainEvent' function at line 57
       It runs first because the listener is set to when your HTML content has loaded
     */
-document.addEventListener("DOMContentLoaded", async () => mainEvent()); // the async keyword means we can make API requests
+document.addEventListener('DOMContentLoaded', async () => mainEvent()); // the async keyword means we can make API requests
