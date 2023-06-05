@@ -1,4 +1,4 @@
-# inst377-group-project.github.io
+# Linkbrary
  The dataset we are using is the PG County Open Data API.  Given a scenario where a student wants to find the nearest library via their school, they can decide which library to go to.  As a PG County student, the school library was only operational during school hours and had limited access because you always needed a hall pass to access the library throughout the school day.  
  Some students' home environments aren’t exactly suitable for their learning, so by informing students of local studying spaces, they can perform better academically and have tons of community resources. 
  Prince George’s County is a county that has a history of redlining and is underfunded, which is also home to low-income residents and first-generation students. By creating this, students in PG will have access to college resources, tutoring, and a supportive educational environment.  
